@@ -57,7 +57,15 @@ body.mode-dashboard {
 body.mode-floatingbar {
   background-color: transparent !important;
   color: var(--text-primary);
-  overflow: hidden;
+  overflow: hidden !important;
+  margin: 0;
+  padding: 0;
+}
+
+body.mode-floatingbar ::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 /* Scrollbars */

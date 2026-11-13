@@ -6,7 +6,7 @@ use std::fs;
 use std::os::raw::c_char;
 use std::path::PathBuf;
 use std::sync::Mutex;
-use tauri::{AppHandle, Manager, PhysicalPosition, PhysicalSize};
+use tauri::{AppHandle, LogicalPosition, LogicalSize, Manager, Position, Size};
 
 extern "C" {
     fn menubar_get_status_items_json() -> *mut c_char;
@@ -39,7 +39,7 @@ pub fn load_config() -> UserConfig {
     }
     UserConfig {
         hidden_bundle_ids: Vec::new(),
-        floating_bar_position: "center-notch".to_string(),
+        floating_bar_position: "right".to_string(),
         auto_hide_floating_bar: false,
         show_all_in_floating_bar: false,
     }
@@ -226,33 +226,38 @@ pub fn position_and_show_floating_bar(
 
         let cfg = config_state.0.lock().map_err(|e| e.to_string())?.clone();
 
-        let bar_width = 720.0;
-        let bar_height = 62.0;
+        // Logical points for sleek menu bar floating strip
+        let bar_width = 940.0;
+        let bar_height = 46.0;
 
         let (pos_x, pos_y) = match cfg.floating_bar_position.as_str() {
-            "right" => (
-                screen_info.width - bar_width - 24.0,
-                screen_info.safe_area_top + 6.0,
-            ),
-            _ => {
-                // center under notch
+            "center-notch" => {
                 if screen_info.has_notch {
                     let notch_center = screen_info.notch_left + (screen_info.notch_width / 2.0);
                     (
-                        notch_center - (bar_width / 2.0),
+                        (notch_center - (bar_width / 2.0)).max(16.0),
                         screen_info.safe_area_top + 6.0,
                     )
                 } else {
                     (
-                        (screen_info.width - bar_width) / 2.0,
+                        ((screen_info.width - bar_width) / 2.0).max(16.0),
                         screen_info.safe_area_top + 6.0,
                     )
                 }
             }
+            _ => {
+                // Default: Right-aligned under status items (just like Screenshot 2)
+                let right_margin = 16.0;
+                (
+                    (screen_info.width - bar_width - right_margin).max(16.0),
+                    screen_info.safe_area_top + 6.0,
+                )
+            }
         };
 
-        let _ = window.set_position(PhysicalPosition::new(pos_x as i32, pos_y as i32));
-        let _ = window.set_size(PhysicalSize::new(bar_width as u32, bar_height as u32));
+        // Use Logical coordinates so Retina 2x displays scale accurately
+        let _ = window.set_position(Position::Logical(LogicalPosition::new(pos_x, pos_y)));
+        let _ = window.set_size(Size::Logical(LogicalSize::new(bar_width, bar_height)));
         let _ = window.show();
         let _ = window.set_focus();
     }
