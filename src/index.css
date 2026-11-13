@@ -54,7 +54,7 @@ body.mode-dashboard {
   color: var(--text-primary);
 }
 
-body.mode-icebar {
+body.mode-floatingbar {
   background-color: transparent !important;
   color: var(--text-primary);
   overflow: hidden;

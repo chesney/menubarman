@@ -51,16 +51,22 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Brand & Subtitle */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
         <div style={{
-          width: '36px',
-          height: '36px',
+          width: '38px',
+          height: '38px',
           borderRadius: '10px',
-          background: 'linear-gradient(135deg, #0284c7 0%, #06b6d4 100%)',
+          overflow: 'hidden',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: '0 4px 12px rgba(6, 182, 212, 0.35)',
+          backgroundColor: '#0f172a',
+          border: '1px solid rgba(255, 255, 255, 0.15)',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)',
         }}>
-          <Sparkles size={20} color="#ffffff" />
+          <img
+            src="/logo.svg"
+            alt="MenuBarMan"
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
         </div>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -153,7 +159,7 @@ export const Header: React.FC<HeaderProps> = ({
               ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
               : 'linear-gradient(135deg, #0284c7 0%, #06b6d4 100%)',
           }}
-          title="Toggle the floating secondary bar (Ice Bar) below your menu bar"
+          title="Toggle the floating secondary bar below your menu bar"
         >
           <Maximize2 size={14} />
           <span>{floatingBarVisible ? 'Hide Floating Bar' : 'Show Floating Bar'}</span>

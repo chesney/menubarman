@@ -2,28 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { MenuBarState, MenuBarItem } from '../types/menubar';
 import { menubarService } from '../services/menubarService';
 import {
-  Sparkles,
   X,
   ExternalLink,
   Eye,
-  EyeOff,
-  Search,
-  AlertTriangle
+  EyeOff
 } from 'lucide-react';
 
-export const IceBar: React.FC = () => {
+export const FloatingBar: React.FC = () => {
   const [state, setState] = useState<MenuBarState | null>(null);
   const [loading, setLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
   const [search, setSearch] = useState('');
   const [activeTooltip, setActiveTooltip] = useState<MenuBarItem | null>(null);
+  const [openingDashboard, setOpeningDashboard] = useState(false);
 
   const fetchData = async () => {
     try {
       const data = await menubarService.getMenuBarState();
       setState(data);
     } catch (err) {
-      console.error('Failed to get menu bar state in IceBar:', err);
+      console.error('Failed to get menu bar state:', err);
     } finally {
       setLoading(false);
     }
@@ -59,9 +57,12 @@ export const IceBar: React.FC = () => {
 
   const handleOpenDashboard = async () => {
     try {
+      setOpeningDashboard(true);
       await menubarService.openMainWindow();
     } catch (err) {
       console.error('Failed to open dashboard:', err);
+    } finally {
+      setTimeout(() => setOpeningDashboard(false), 500);
     }
   };
 
@@ -100,36 +101,44 @@ export const IceBar: React.FC = () => {
         borderRadius: '9999px',
         border: '1px solid rgba(255, 255, 255, 0.16)',
         boxShadow: '0 8px 32px rgba(0, 0, 0, 0.65), 0 0 1px rgba(255, 255, 255, 0.3)',
-        maxWidth: '700px',
+        maxWidth: '720px',
         width: '100%',
       }}>
-        {/* Brand / Drag Handle */}
+        {/* Brand / Drag Handle with Barman SVG Icon */}
         <div
           data-tauri-drag-region
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
-            paddingRight: '8px',
-            borderRight: '1px solid rgba(255, 255, 255, 0.1)',
+            gap: '8px',
+            paddingRight: '10px',
+            borderRight: '1px solid rgba(255, 255, 255, 0.12)',
             cursor: 'grab',
             flexShrink: 0,
           }}
           title="Drag to reposition floating bar"
         >
+          {/* Unique Barman + Menu Icon */}
           <div style={{
-            width: '24px',
-            height: '24px',
-            borderRadius: '50%',
-            background: 'linear-gradient(135deg, #0284c7 0%, #06b6d4 100%)',
+            width: '26px',
+            height: '26px',
+            borderRadius: '7px',
+            overflow: 'hidden',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            backgroundColor: '#0f172a',
+            border: '1px solid rgba(255, 255, 255, 0.15)',
+            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.4)',
           }}>
-            <Sparkles size={13} color="#ffffff" />
+            <img
+              src="/logo.svg"
+              alt="MenuBarMan"
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
           </div>
           <span style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '-0.01em', color: '#f8fafc' }}>
-            IceBar
+            MenuBarMan
           </span>
         </div>
 
@@ -236,13 +245,13 @@ export const IceBar: React.FC = () => {
           )}
         </div>
 
-        {/* Controls: Toggle All/Hidden, Open Dashboard, Close */}
+        {/* Controls: Toggle All/Hidden, Open Dashboard [↗], Close [✕] */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
           gap: '4px',
-          paddingLeft: '6px',
-          borderLeft: '1px solid rgba(255, 255, 255, 0.1)',
+          paddingLeft: '8px',
+          borderLeft: '1px solid rgba(255, 255, 255, 0.12)',
           flexShrink: 0,
         }}>
           {/* Toggle All / Hidden */}
@@ -253,32 +262,38 @@ export const IceBar: React.FC = () => {
               border: 'none',
               color: showAll ? 'var(--accent-cyan)' : 'var(--text-secondary)',
               cursor: 'pointer',
-              padding: '4px',
-              borderRadius: '4px',
+              padding: '6px',
+              borderRadius: '6px',
               display: 'flex',
               alignItems: 'center',
+              transition: 'all 0.15s ease',
             }}
+            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.08)')}
+            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
             title={showAll ? 'Showing all items (click to show only hidden)' : 'Showing hidden items only (click to show all)'}
           >
-            {showAll ? <Eye size={14} /> : <EyeOff size={14} />}
+            {showAll ? <Eye size={15} /> : <EyeOff size={15} />}
           </button>
 
-          {/* Open Main Dashboard */}
+          {/* Open Main Dashboard Button ([↗] in the red square) */}
           <button
             onClick={handleOpenDashboard}
             style={{
-              background: 'transparent',
+              background: openingDashboard ? 'rgba(6, 182, 212, 0.25)' : 'transparent',
               border: 'none',
-              color: 'var(--text-secondary)',
+              color: openingDashboard ? 'var(--accent-cyan)' : 'var(--text-secondary)',
               cursor: 'pointer',
-              padding: '4px',
-              borderRadius: '4px',
+              padding: '6px',
+              borderRadius: '6px',
               display: 'flex',
               alignItems: 'center',
+              transition: 'all 0.15s ease',
             }}
-            title="Open MenuBarMan Dashboard"
+            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.08)')}
+            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = openingDashboard ? 'rgba(6, 182, 212, 0.25)' : 'transparent')}
+            title="Open MenuBarMan Dashboard Window"
           >
-            <ExternalLink size={14} />
+            <ExternalLink size={15} />
           </button>
 
           {/* Close Floating Bar */}
@@ -289,17 +304,21 @@ export const IceBar: React.FC = () => {
               border: 'none',
               color: 'var(--text-muted)',
               cursor: 'pointer',
-              padding: '4px',
-              borderRadius: '4px',
+              padding: '6px',
+              borderRadius: '6px',
               display: 'flex',
               alignItems: 'center',
+              transition: 'all 0.15s ease',
             }}
+            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.15)')}
+            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
             title="Close Floating Bar"
           >
-            <X size={14} />
+            <X size={15} />
           </button>
         </div>
       </div>
     </div>
   );
 };
+export default FloatingBar;

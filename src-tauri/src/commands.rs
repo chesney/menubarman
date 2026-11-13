@@ -11,6 +11,7 @@ use tauri::{AppHandle, Manager, PhysicalPosition, PhysicalSize};
 extern "C" {
     fn menubar_get_status_items_json() -> *mut c_char;
     fn menubar_free_string(s: *mut c_char);
+    fn menubar_activate_self();
     fn menubar_activate_app(pid: libc::pid_t) -> bool;
     fn menubar_click_item(x: f64, y: f64) -> bool;
     fn menubar_reveal_in_finder(pid: libc::pid_t) -> bool;
@@ -197,7 +198,7 @@ pub fn position_and_show_floating_bar(
     app: AppHandle,
     config_state: tauri::State<ConfigState>,
 ) -> Result<(), String> {
-    if let Some(window) = app.get_webview_window("icebar") {
+    if let Some(window) = app.get_webview_window("floatingbar") {
         let json_ptr = unsafe { menubar_get_status_items_json() };
         let mut screen_info = ScreenInfo {
             width: 2056.0,
@@ -260,7 +261,7 @@ pub fn position_and_show_floating_bar(
 
 #[tauri::command]
 pub fn hide_floating_bar(app: AppHandle) -> Result<(), String> {
-    if let Some(window) = app.get_webview_window("icebar") {
+    if let Some(window) = app.get_webview_window("floatingbar") {
         let _ = window.hide();
     }
     Ok(())
@@ -271,7 +272,7 @@ pub fn toggle_floating_bar(
     app: AppHandle,
     config_state: tauri::State<ConfigState>,
 ) -> Result<bool, String> {
-    if let Some(window) = app.get_webview_window("icebar") {
+    if let Some(window) = app.get_webview_window("floatingbar") {
         let is_visible = window.is_visible().unwrap_or(false);
         if is_visible {
             let _ = window.hide();
@@ -281,13 +282,13 @@ pub fn toggle_floating_bar(
             Ok(true)
         }
     } else {
-        Err("IceBar window not found".to_string())
+        Err("Floating bar window not found".to_string())
     }
 }
 
 #[tauri::command]
 pub fn is_floating_bar_visible(app: AppHandle) -> Result<bool, String> {
-    if let Some(window) = app.get_webview_window("icebar") {
+    if let Some(window) = app.get_webview_window("floatingbar") {
         Ok(window.is_visible().unwrap_or(false))
     } else {
         Ok(false)
@@ -296,10 +297,29 @@ pub fn is_floating_bar_visible(app: AppHandle) -> Result<bool, String> {
 
 #[tauri::command]
 pub fn open_main_window(app: AppHandle) -> Result<(), String> {
+    // 1. Activate application at macOS system level so it takes foreground focus
+    unsafe {
+        menubar_activate_self();
+    }
+
+    // 2. Show and focus main window, or recreate if it was closed
     if let Some(window) = app.get_webview_window("main") {
         let _ = window.show();
         let _ = window.unminimize();
         let _ = window.set_focus();
+    } else {
+        let _ = tauri::WebviewWindowBuilder::new(
+            &app,
+            "main",
+            tauri::WebviewUrl::App("index.html".into()),
+        )
+        .title("MenuBarMan")
+        .inner_size(1200.0, 800.0)
+        .min_inner_size(880.0, 600.0)
+        .center()
+        .hidden_title(true)
+        .title_bar_style(tauri::TitleBarStyle::Overlay)
+        .build();
     }
     Ok(())
 }

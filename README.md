@@ -2,7 +2,7 @@
 
 > **Fast, lightweight, native macOS Menu Bar Manager & Notch Hidden Items Inspector coded in Rust & Tauri v2.**
 
-Inspired by [Ice](https://github.com/jordanbaird/Ice), **MenuBarMan** provides a clean, modern, and intuitive way to manage your macOS status bar items, with first-class support for **revealing and interacting with hidden menu bar items** (especially on MacBooks with camera notches or screens crowded with status items).
+**MenuBarMan** provides a clean, modern, and intuitive way to manage your macOS status bar items, with first-class support for **revealing and interacting with hidden menu bar items** (especially on MacBooks with camera notches or screens crowded with status items).
 
 ---
 
@@ -17,7 +17,7 @@ Users have no native way to:
 
 ## 🚀 Key Features
 
-- **Floating Ice Bar (Secondary Menu Bar)**:
+- **Floating Secondary Menu Bar ("MenuBarMan Bar")**:
   - Floats gracefully directly below the MacBook camera notch or status bar.
   - Displays all hidden or obstructed status bar items in a frosted glass capsule (`backdrop-filter: blur(30px)`).
   - One-click app activation and synthetic click forwarding.
@@ -59,20 +59,20 @@ menubarman/
 │   │   ├── lib.rs            # Tauri v2 builder, tray icon, floating bar manager
 │   │   └── main.rs           # Entry point
 │   ├── Cargo.toml            # Rust dependencies (tauri v2, serde, cc)
-│   └── tauri.conf.json       # Multi-window config (main dashboard & floating icebar)
+│   └── tauri.conf.json       # Multi-window config (main dashboard & floating bar)
 ├── src/
 │   ├── components/
 │   │   ├── Header.tsx        # Top navigation with live stats & floating bar toggle
 │   │   ├── NotchVisualizer.tsx # Scale geometry visualizer of notch & status items
 │   │   ├── HiddenItemsShelf.tsx# Spotlight cards for hidden & obstructed items
 │   │   ├── ItemsTable.tsx    # Searchable, filterable menu items table
-│   │   ├── IceBar.tsx        # Floating secondary capsule bar (Ice Bar)
+│   │   ├── FloatingBar.tsx   # Floating secondary capsule bar
 │   │   └── SettingsModal.tsx # Position preferences & auto-hide behavior
 │   ├── services/
 │   │   └── menubarService.ts # Frontend bridge service
 │   ├── types/
 │   │   └── menubar.ts        # TypeScript interfaces
-│   ├── App.tsx               # Main app router (dashboard vs icebar mode)
+│   ├── App.tsx               # Main app router (dashboard vs floating bar mode)
 │   └── index.css             # Glassmorphic Apple-inspired styling
 ├── package.json
 └── vite.config.ts

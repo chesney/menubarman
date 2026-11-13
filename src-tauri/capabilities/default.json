@@ -2,7 +2,7 @@
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
   "description": "Default capability for MenuBarMan",
-  "windows": ["main", "icebar"],
+  "windows": ["main", "floatingbar"],
   "permissions": [
     "core:default",
     "opener:default",

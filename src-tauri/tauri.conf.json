@@ -23,9 +23,9 @@
         "titleBarStyle": "Overlay"
       },
       {
-        "label": "icebar",
-        "title": "MenuBarMan Bar",
-        "url": "index.html?mode=icebar",
+        "label": "floatingbar",
+        "title": "MenuBarMan Floating Bar",
+        "url": "index.html?mode=floatingbar",
         "width": 720,
         "height": 62,
         "resizable": false,

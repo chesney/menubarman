@@ -173,6 +173,12 @@ void menubar_free_string(char *s) {
     }
 }
 
+void menubar_activate_self(void) {
+    @autoreleasepool {
+        [NSApp activateIgnoringOtherApps:YES];
+    }
+}
+
 bool menubar_activate_app(pid_t pid) {
     @autoreleasepool {
         NSRunningApplication *app = [NSRunningApplication runningApplicationWithProcessIdentifier:pid];

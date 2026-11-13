@@ -5,13 +5,13 @@ import { Header } from './components/Header';
 import { NotchVisualizer } from './components/NotchVisualizer';
 import { HiddenItemsShelf } from './components/HiddenItemsShelf';
 import { ItemsTable } from './components/ItemsTable';
-import { IceBar } from './components/IceBar';
+import { FloatingBar } from './components/FloatingBar';
 import { SettingsModal } from './components/SettingsModal';
 import { AlertCircle } from 'lucide-react';
 
 export const App: React.FC = () => {
-  // Check if running in floating IceBar mode
-  const isIceBarMode = window.location.search.includes('mode=icebar');
+  // Check if running in floating bar mode
+  const isFloatingBarMode = window.location.search.includes('mode=floatingbar');
 
   const [state, setState] = useState<MenuBarState | null>(null);
   const [config, setConfig] = useState<UserConfig>({
@@ -28,12 +28,12 @@ export const App: React.FC = () => {
 
   // Initialize body class
   useEffect(() => {
-    if (isIceBarMode) {
-      document.body.className = 'mode-icebar';
+    if (isFloatingBarMode) {
+      document.body.className = 'mode-floatingbar';
     } else {
       document.body.className = 'mode-dashboard';
     }
-  }, [isIceBarMode]);
+  }, [isFloatingBarMode]);
 
   const loadData = useCallback(async () => {
     try {
@@ -56,7 +56,7 @@ export const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!isIceBarMode) {
+    if (!isFloatingBarMode) {
       loadData();
       const interval = setInterval(async () => {
         try {
@@ -68,11 +68,11 @@ export const App: React.FC = () => {
       }, 4000);
       return () => clearInterval(interval);
     }
-  }, [isIceBarMode, loadData]);
+  }, [isFloatingBarMode, loadData]);
 
-  // If IceBar window, render dedicated capsule view
-  if (isIceBarMode) {
-    return <IceBar />;
+  // If floating bar window, render dedicated capsule view
+  if (isFloatingBarMode) {
+    return <FloatingBar />;
   }
 
   const handleToggleFloatingBar = async () => {

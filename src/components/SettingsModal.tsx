@@ -74,7 +74,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           {/* Floating Bar Position */}
           <div>
             <label style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-primary)', display: 'block', marginBottom: '6px' }}>
-              Floating Ice Bar Position
+              Floating Menu Bar Position
             </label>
             <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginBottom: '10px' }}>
               Where the floating secondary bar appears when triggered
@@ -185,7 +185,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           }}>
             <Keyboard size={16} color="var(--accent-indigo)" />
             <div>
-              Click the <strong style={{ color: '#fff' }}>MenuBarMan</strong> icon in your macOS menu bar anytime to toggle the Floating Ice Bar!
+              Click the <strong style={{ color: '#fff' }}>MenuBarMan</strong> icon in your macOS menu bar anytime to toggle the Floating Bar!
             </div>
           </div>
         </div>

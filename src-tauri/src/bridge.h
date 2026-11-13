@@ -17,6 +17,9 @@ char *menubar_get_status_items_json(void);
 /// Frees a string allocated by Objective-C bridge.
 void menubar_free_string(char *s);
 
+/// Activates MenuBarMan itself and brings its windows to the front.
+void menubar_activate_self(void);
+
 /// Activates the application owning the given PID and brings its windows to the front.
 bool menubar_activate_app(pid_t pid);
 
